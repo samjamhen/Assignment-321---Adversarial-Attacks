@@ -10,11 +10,11 @@ from sklearn.metrics import accuracy_score
 # Locate model/data files relative to project root
 BASE = Path(__file__).resolve().parent.parent
 
-# Load test data (float32 is required for PyTorch)
+# Load test data, had to add float32 for PyTorch
 X_test = np.load(BASE / "X_test_scaled.npy").astype(np.float32)
 y_test = np.load(BASE / "y_test_binary.npy")
 
-# Load the trained RandomForest model (this is our real-world target)
+# Load trained RandomForest model
 rf_model = joblib.load(BASE / "rf_model.joblib")
 rf_art = SklearnClassifier(model=rf_model)
 
@@ -59,7 +59,8 @@ clean_preds = rf_model.predict(X_test)
 baseline_acc = accuracy_score(y_test, clean_preds)
 print(f"RandomForest accuracy on clean test set: {baseline_acc:.4f}")
 
-# Define evasion attacks using the surrogate
+# Evasion attacks using the surrogate
+# We can try different epsilons depending on how much effect we want
 attacks = {
     "FGSM_eps_0.075": FastGradientMethod(estimator=surrogate_art, eps=0.075),
     "FGSM_eps_0.125": FastGradientMethod(estimator=surrogate_art, eps=0.125),
@@ -75,7 +76,7 @@ for name, attack in attacks.items():
     print(f"\nRunning attack: {name}")
     X_adv = np.zeros_like(X_test, dtype=np.float32)
 
-    # Craft adversarial examples in chunks (batching helps memory)
+    # Craft adversarial examples in chunks
     for i in range(0, X_test.shape[0], batch_size):
         xb = X_test[i:i + batch_size]
         xb_adv = attack.generate(x=xb)
@@ -88,7 +89,7 @@ for name, attack in attacks.items():
     adv_preds = rf_model.predict(X_adv)
     adv_acc = accuracy_score(y_test, adv_preds)
 
-    # Calculate ASR: how many malicious samples fooled the model?
+    # Calculate ASR
     mask_malicious = y_test == 1
 
     if mask_malicious.sum() > 0:
@@ -101,7 +102,7 @@ for name, attack in attacks.items():
     else:
         asr = None  # No attacks in the dataset
 
-    print(f"{name} → RF accuracy on adversarial: {adv_acc:.4f} | ASR: {asr}")
+    print(f"{name} - RF accuracy on adversarial: {adv_acc:.4f} | ASR: {asr}")
     results[name] = {"acc_adv_rf": adv_acc, "ASR": asr}
 
 # Print a simple summary
