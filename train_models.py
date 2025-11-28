@@ -6,13 +6,13 @@ import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 
-# Load the scaled features and binary labels from preprocessed files
+# Load scaled features and binary labels from preprocessed files
 X_train = np.load("X_train_scaled.npy")
 y_train = np.load("y_train_binary.npy")
 X_test = np.load("X_test_scaled.npy")
 y_test = np.load("y_test_binary.npy")
 
-# Build and train the RandomForest model — still a good baseline for tabular stuff
+# Build and train the RandomForest model
 forest = RandomForestClassifier(
     n_estimators=200,
     max_depth=20,
@@ -24,12 +24,13 @@ forest.fit(X_train, y_train)
 
 rf_preds = forest.predict(X_test)
 rf_acc = accuracy_score(y_test, rf_preds)
-print(f"RandomForest test accuracy: {rf_acc:.4f}")
+print(f"RandomForest test acc: {rf_acc:.4f}")
 
 # Save the trained RandomForest model for use later in the pipeline
 joblib.dump(forest, "rf_model.joblib")
 
-# MLP surrogate model — used to simulate attacker knowledge during adversarial crafting
+# MLP surrogate model
+# used to simulate attacker knowledge during adversarial crafting
 class SurrogateMLP(nn.Module):
     def __init__(self, input_dim, hidden=128):
         super().__init__()
@@ -92,4 +93,4 @@ for epoch in range(epochs):
 
 # Save model weights for use in downstream attack simulation
 torch.save(mlp.state_dict(), "surrogate_mlp.pth")
-print("Saved: surrogate_mlp.pth and rf_model.joblib")
+print("Saved surrogate_mlp.pth and rf_model.joblib")

@@ -57,7 +57,7 @@ surrogate_art = PyTorchClassifier(
 # Baseline performance
 clean_preds = rf_model.predict(X_test)
 baseline_acc = accuracy_score(y_test, clean_preds)
-print(f"RandomForest accuracy on clean test set: {baseline_acc:.4f}")
+print(f"RF clean acc: {baseline_acc:.4f}")
 
 # Evasion attacks using the surrogate
 # We can try different epsilons depending on how much effect we want
@@ -73,7 +73,7 @@ results = {}
 
 # Loop through each attack config and evaluate impact on RF model
 for name, attack in attacks.items():
-    print(f"\nRunning attack: {name}")
+    print(f"\nRunning attack {name} ...")
     X_adv = np.zeros_like(X_test, dtype=np.float32)
 
     # Craft adversarial examples in chunks
@@ -102,7 +102,7 @@ for name, attack in attacks.items():
     else:
         asr = None  # No attacks in the dataset
 
-    print(f"{name} - RF accuracy on adversarial: {adv_acc:.4f} | ASR: {asr}")
+    print(f"{name} --> RF acc on adv: {adv_acc:.4f}  ASR: {asr}")
     results[name] = {"acc_adv_rf": adv_acc, "ASR": asr}
 
 # Print a simple summary
