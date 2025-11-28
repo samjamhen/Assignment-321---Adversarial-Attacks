@@ -1,13 +1,15 @@
-NOTE: Data folder is not pushed
+# 331 Assignment
 
-Steps to run: 
-1. Create venv and install required dependencies
-2. run setup_dataset/download_UNSW_NB15.py to download dataset
-3. take output path, then add it in move_dataset.py
-4. run move_dataset.py
-5. run data_prep.py
-6. run validate_data_prep.py
+**NOTE:** Data folder is not pushed.
 
-For the attack: 
-1. train_models.py to train the model
-2. transfer_attack_art.py to attack
+## Steps to Run:
+1. Create a virtual environment and install required dependencies.
+2. Run `setup_dataset/download_UNSW_NB15.py` to download the dataset.
+3. Take the output path and add it to `move_dataset.py`.
+4. Run `move_dataset.py`.
+5. Run `data_prep.py`.
+6. Run `validate_data_prep.py`.
+
+## For the Attack:
+1. Run `train_models.py` to train the model.
+2. Run `transfer_attack_art.py` to perform the attack.
