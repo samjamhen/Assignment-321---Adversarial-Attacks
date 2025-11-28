@@ -1,3 +1,5 @@
+NOTE: Data folder is not pushed
+
 Steps to run: 
 1. Create venv and install required dependencies
 2. run setup_dataset/download_UNSW_NB15.py to download dataset
